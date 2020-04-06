@@ -11,7 +11,7 @@
         <p><a href="makes" class="button">MAKES</a></p>
     </div>
     <div class="listings">
-        <h1>Listings Near Rowan</h2>
+        <h1 class="listHeader">Listings Near Rowan</h2>
     </div>
 </body>
 </html>
