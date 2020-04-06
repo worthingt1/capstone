@@ -1,0 +1,45 @@
+body {
+    padding: 0px;
+    background-color: #FFC0CB;
+    width: 100%;
+}
+
+.main {
+    margin: 0px auto;
+    text-align: center;
+    color: #ffff66;
+}
+
+.flash {
+    animation: flashing 0.5s infinite;
+    color: #ff0000;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+@keyframes flashing{
+    0%{ color: #ff0000; }
+    50%{ color: #ff0000; }
+    60%{ color: transparent; }
+    99%{ color: transparent; }
+    100%{ color: #ff0000; }
+}
+
+a.button {
+    display: block;
+    color: #ff0000;
+    background-color: #00ff00;
+    width: 10%;
+    padding: 2%;
+    margin: 0px auto;
+    border-radius: 5px;
+    border: 1px dotted black;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: x-large;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.listings {
+    margin: 5% auto auto auto;
+    text-align: center;
+    color: #0066ff;
+}

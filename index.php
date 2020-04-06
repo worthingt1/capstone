@@ -1,9 +1,17 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Car Model Viewer</title>
+    <title>Car For Sale Near You</title>
+    <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-    <p><a href="makes">Makes</a></p>
+    <div class="main">
+        <h1>Cars for Sale in Your Local Area</h1>
+        <marquee><h2 class="flash">Car Salesmen HATE this!!!</h2></marquee>
+        <p><a href="makes" class="button">MAKES</a></p>
+    </div>
+    <div class="listings">
+        <h1>Listings Near Rowan</h2>
+    </div>
 </body>
 </html>
