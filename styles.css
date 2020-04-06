@@ -1,5 +1,6 @@
 body {
     padding: 0px;
+    margin: 0;
     background-color: #FFC0CB;
     width: 100%;
 }
@@ -11,6 +12,7 @@ body {
 }
 
 .flash {
+    margin: 0px auto;
     animation: flashing 0.5s infinite;
     color: #ff0000;
     font-family: "Comic Sans MS", "Comic Sans", cursive;
