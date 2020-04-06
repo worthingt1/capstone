@@ -58,17 +58,5 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 
 	}
 ?>
-
-    <!--<form id="sampleForm" name="sampleForm" method="get" action="phpscript.php">
-    <input type="hidden" name="total" id="total" value="">
-    <a href="#" onclick="setValue();">Click to submit</a>
-    </form> -->
-
-<!--function hndlr(response) {-->
-
-    <!--<script src="https://www.googleapis.com/customsearch/v1?key=AIzaSyAFG_XFuzvrGSF_UML-V34t-UwNrYAngtI&cx=013204994027278291303:mhubrebrimn&q=chevy&callback=hndlr">
-    </script>
-	-->
-
   </body>
 </html>
