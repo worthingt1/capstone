@@ -2,9 +2,9 @@
 ini_set('display_errors', 1); //*REMOVE FOR PRODUCTION
 ini_set('display_startup_errors', 1); //*REMOVE FOR PRODUCTION
 error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
-	require("config.php"); // DB connection credentials
+	require("../config.php"); // DB connection credentials
 	ini_set("allow_url_fopen", 1); //needed to load json API url
-	$make = "toyota"; //To be replaced with a POST to load a make
+	$make = str_replace(" ", "%20", htmlentities($_GET["make"])); //To be replaced with a POST to load a make
 	$url = "https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/$make?format=json";
 	try {
 		$useDb = true; //initialize variables in this scope
