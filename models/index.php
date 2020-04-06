@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="../styles.css"/>
+</head>
+<body>
 <?php
 ini_set('display_errors', 1); //*REMOVE FOR PRODUCTION
 ini_set('display_startup_errors', 1); //*REMOVE FOR PRODUCTION
@@ -73,3 +79,5 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
     }
     //API Source: https://vpic.nhtsa.dot.gov/api/
 ?>
+</body>
+</html>
