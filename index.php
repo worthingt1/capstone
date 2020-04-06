@@ -1,2 +1,9 @@
-<p>Temporary Page for Stage 2</p>
-<p><a href="tom.php">Tom's Example</a></p>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Car Model Viewer</title>
+</head>
+<body>
+    <p><a href="makes">Makes</a></p>
+</body>
+</html>
