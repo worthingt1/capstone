@@ -12,7 +12,8 @@ function hndlr(response) {
 		item[i] = response.items[i];
 	var model = "chevy";
         // in production code, item.htmlTitle should have the HTML entities escaped.
-	document.getElementById("content").innerHTML += "<form action='steve.php' method='post' id='imageSearch'><input type='text' hidden name='model' value='" + model + "'/><input type='text' hidden name='imgUrl' value='" + item[i].htmlTitle + "' /><input type='text' hidden name='useApi' value='yes'/></form>";
+	document.getElementById("content").innerHTML += "<form action='steve.php' method='post' id='imageSearch'><input type='text' hidden name='model' value='" + model + "'/><input type='text' hidden name='imgUrl' value='" + item[i].link + "' /><input type='text' hidden name='useApi' value='yes'/></form>";
+	//alert(JSON.stringify(item[i])); //VIEW RETURNED RESULT PARAMERTERS
 	document.getElementById("imageSearch").submit();
       }
       }
@@ -47,10 +48,11 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 			$stmt->close();
 			$conn->close();
 		}
-				echo '<script src="https://www.googleapis.com/customsearch/v1?key=AIzaSyAFG_XFuzvrGSF_UML-V34t-UwNrYAngtI&cx=013204994027278291303:mhubrebrimn&q=chevy&callback=hndlr"></script>';
+				echo '<script src="https://www.googleapis.com/customsearch/v1?q=chevy&searchType=image&key=AIzaSyAFG_XFuzvrGSF_UML-V34t-UwNrYAngtI&cx=013204994027278291303:mhubrebrimn&callback=hndlr"></script>';
 			} else
 			{
-				var_dump($results);
+				$imgUrl = $results[0]["url"];
+				echo "<img src='" . $imgUrl . "'/>";
 			}
 			$conn->close();
 	} catch (Exception $ex) {
