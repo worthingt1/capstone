@@ -11,7 +11,6 @@ function hndlr(response) {
         var item = []
 		item[i] = response.items[i];
 	var model = "chevy";
-        // in production code, item.htmlTitle should have the HTML entities escaped.
 	document.getElementById("content").innerHTML += "<form action='steve.php' method='post' id='imageSearch'><input type='text' hidden name='model' value='" + model + "'/><input type='text' hidden name='imgUrl' value='" + item[i].link + "' /><input type='text' hidden name='useApi' value='yes'/></form>";
 	//alert(JSON.stringify(item[i])); //VIEW RETURNED RESULT PARAMERTERS
 	document.getElementById("imageSearch").submit();
@@ -35,6 +34,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 			$result = $stmt->get_result();
 			$results = $result->fetch_all(MYSQLI_ASSOC);
 			$stmt->close();
+			$conn->close();
 			if (count($results) == 0) {
 		if ($_POST["useApi"] == "yes") {
 			$model = $_POST["model"];
@@ -54,7 +54,6 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 				$imgUrl = $results[0]["url"];
 				echo "<img src='" . $imgUrl . "'/>";
 			}
-			$conn->close();
 	} catch (Exception $ex) {
 
 	}
