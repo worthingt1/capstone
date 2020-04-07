@@ -33,14 +33,12 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 				foreach ($results as $row) {
 					$time = DateTime::createFromFormat ("Y-m-d H:i:s", $row["timestamp"]); // check to see if information in DB is current enough, otherwise use API
 					$now = new DateTime();
-					//echo $time->format("d-m-Y"); /*to be removed, debug
 					if (date_diff($now, $time)->format('d') > 5) {
 						$useDb = false;
 						echo "DB outdated, falling back to API and populating for next time";
 					}
 				}
 			}
-			//var_dump($results); //Dump SQL contents for testing
 			$conn->close();
 		} catch (Exception $error) {
 			$useDb = false;
@@ -52,7 +50,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 			$conn = new mysqli($dbHost, $dbAdmin, $dbAdminPw, $dbSchema);
 			for ($i = 0; $i < count($results); $i++) {
 				$sql = "REPLACE INTO tom_makes (Make_ID, Make_Name) VALUES(?, ?) WHERE Make_ID IN ($qs)";
-				$stmt=$conn->prepare($sql) or die($conn->error); //*REMOVE ERROR OUTPUT FOR PRODUCTION
+				$stmt=$conn->prepare($sql) or die("Error loading info. Please contact our support team: 555-555-5555 with error code 3297cars");
 				$makeId = $results[$i]->Make_ID;
 				$makeName = $results[$i]->Make_Name;
 				$stmt->bind_param("ss" . $bind, $makeId, $makeName, ...$makes);
@@ -61,8 +59,6 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 			}
 			$conn->close();
 		}
-		echo "Using API? ";
-		echo $useDb ? "No. DB has current information." : "Yes. Updated DB for next use."; //*to be removed for production, showing if api is being used or not
 	        echo "<table><tr><th>Make</th></tr>"; // echo results
 	        for ($i = 0; $i < count($results); $i++) {
 			echo "<tr><td><a href=../models/?make=";
@@ -78,8 +74,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 	        echo "</table>";
     }
     catch (Exception $error) {
-        echo $error->getMessage(); //*REMOVE FOR PRODUCTION AND REPLACE WITH SERVICE UNAVAIL. MSG
+		echo "Error loading navigation. Please contact our support team: 555-555-5555 with error code 23cars";
     }
-    //API Source: https://vpic.nhtsa.dot.gov/api/
 ?>
 </body>
