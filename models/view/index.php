@@ -147,6 +147,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
     }
 ?>
         <div id="content"></div>
+        <p><?php echo $make . " " . $model; ?></p>
     </div>
   </body>
 </html>
