@@ -11,6 +11,11 @@ body {
     color: #ffff66;
 }
 
+.mainWithSidebar {
+    margin-left: 8%;
+    padding: 2%;
+}
+
 .flash {
     margin: 0px auto;
     animation: flashing 0.5s infinite;
@@ -48,4 +53,62 @@ a.button {
 
 .listHeader {
     font-family: "Brush Script MT", cursive;
+}
+
+.sidenavTop {
+    background-color: #000000;
+}
+
+.sidenavTop a {
+    color: #ffffff;
+    font-family: fantasy;
+    padding: 5%;
+}
+
+.sideHeader {
+    color: #000000;
+    font-weight: bold;
+    font-size: x-large;
+    font-family: monospace;
+    text-align: center;
+}
+
+::-webkit-scrollbar {
+    width: 10%;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ffff66;
+    border: 2px dashed #0066ff;
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00ff00;
+}
+
+.sidenav {
+    background-color: #FF5733;
+    height: 100%;
+    width: 8%;
+    position: fixed;
+    /*z-index: 1;*/
+    overflow-x: hidden;
+    top: 0;
+    left: 0;
+    padding: auto 10px auto auto;
+}
+
+.sidenav a {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    padding: 4% 10% 4% 10%;
+    font-size: medium;
+    text-decoration: none;
+    color: #ffffff;
+    display: block;
+}
+
+
+.sidenav a:hover {
+    color: #ffff66;
 }

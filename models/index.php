@@ -4,6 +4,7 @@
 	<link rel="stylesheet" href="../styles.css"/>
 </head>
 <body>
+<div class="mainWithSidebar">
 <?php
 ini_set('display_errors', 1); //*REMOVE FOR PRODUCTION
 ini_set('display_startup_errors', 1); //*REMOVE FOR PRODUCTION
@@ -11,6 +12,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 	require("../config.php"); // DB connection credentials
 	ini_set("allow_url_fopen", 1); //needed to load json API url
 	$make = str_replace(" ", "%20", htmlentities($_GET["make"])); //To be replaced with a POST to load a make
+	$makeRaw = $_GET["make"];
 	$url = "https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/$make?format=json";
 	try {
 		$useDb = true; //initialize variables in this scope
@@ -19,7 +21,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 			$conn = new mysqli($dbHost, $dbRead, $dbReadPw, $dbSchema);
 			$sql = "SELECT * FROM tom_modelsbymake WHERE Make_Name = ?";
 			$stmt = $conn->prepare($sql);
-			$stmt->bind_param("s", $make);
+			$stmt->bind_param("s", $makeRaw);
 			$stmt->execute();
 			$result = $stmt->get_result();
 			$results = $result->fetch_all(MYSQLI_ASSOC);
@@ -62,22 +64,29 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 		}
 		echo "Using API? ";
 		echo $useDb ? "No. DB has current information." : "Yes. Updated DB for next use."; //*to be removed for production, showing if api is being used or not
-	        echo "<table><tr><th>Model</th></tr>"; // echo results
+	        ?>
+		<div class="sidenav">
+			<div class="sidenavTop"><a href="/">&larr; Makes</a></div>
+			<div class="sideHeader">Models</div>
+			<?php
 	        for ($i = 0; $i < count($results); $i++) {
-			echo "<tr><td>";
+			echo "<a href=view/?model=";
 			if ($useDb) {
-				echo $results[$i]["Model_Name"];
+				echo str_replace(" ", "+", htmlentities($results[$i]["Model_Name"]));
+                echo ">" . $results[$i]["Model_Name"];
 			} else {
-				echo $results[$i]->Model_Name;
+				echo str_replace(" ", "+", htmlentities($results[$i]->Model_Name));
+                echo "\">" . $results[$i]->Model_Name;
 			}
-			echo "</td></tr>";
+			echo "</a>";
 	        }
-	        echo "</table>";
+	    echo "</div>";
     }
     catch (Exception $error) {
         echo $error->getMessage(); //*REMOVE FOR PRODUCTION AND REPLACE WITH SERVICE UNAVAIL. MSG
     }
     //API Source: https://vpic.nhtsa.dot.gov/api/
 ?>
+</div>
 </body>
 </html>
