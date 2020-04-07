@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../styles.css"/>
   </head>
   <body>
+  <div class=mainWithSidebar>
 <script>
 function hndlr(response) {
 	      //for (var i = 0; i < response.items.length; i++) {
@@ -145,7 +146,6 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
         echo "Error loading navigation. Please contact our support team: 555-555-5555 with error code 52cars";
     }
 ?>
-    <div class=mainWithSidebar>
         <div id="content"></div>
     </div>
   </body>
