@@ -12,7 +12,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 	require("../config.php"); // DB connection credentials
 	ini_set("allow_url_fopen", 1); //needed to load json API url
 	$make = str_replace(" ", "%20", htmlentities($_GET["make"])); //To be replaced with a POST to load a make
-	$makeRaw = $_GET["make"];
+	$makeClean = $_GET["make"];
 	$url = "https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/$make?format=json";
 	try {
 		$useDb = true; //initialize variables in this scope
@@ -21,7 +21,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 			$conn = new mysqli($dbHost, $dbRead, $dbReadPw, $dbSchema);
 			$sql = "SELECT * FROM tom_modelsbymake WHERE Make_Name = ?";
 			$stmt = $conn->prepare($sql);
-			$stmt->bind_param("s", $makeRaw);
+			$stmt->bind_param("s", $makeClean);
 			$stmt->execute();
 			$result = $stmt->get_result();
 			$results = $result->fetch_all(MYSQLI_ASSOC);
@@ -66,7 +66,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 			<div class="sideHeader">Models</div>
 			<?php
 	        for ($i = 0; $i < count($results); $i++) {
-			echo "<a href=view/?model=";
+			echo "<a href=view/?make=$make&model=";
 			if ($useDb) {
 				echo str_replace(" ", "+", htmlentities($results[$i]["Model_Name"]));
                 echo ">" . $results[$i]["Model_Name"];

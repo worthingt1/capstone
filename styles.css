@@ -112,3 +112,8 @@ a.button {
 .sidenav a:hover {
     color: #ffff66;
 }
+
+.carDisplay {
+    width: 32%;
+    height: auto;
+}
