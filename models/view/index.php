@@ -145,7 +145,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
         echo "Error loading navigation. Please contact our support team: 555-555-5555 with error code 52cars";
     }
 ?>
-    <div class=main>
+    <div class=mainWithSidebar>
         <div id="content"></div>
     </div>
   </body>
