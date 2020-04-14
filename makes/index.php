@@ -67,7 +67,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
                 echo ">" . $results[$i]["Make_Name"];
 			} else {
                 echo str_replace(" ", "+", htmlentities($results[$i]->Make_Name));
-                echo "\">" . $results[$i]->Make_Name;
+                echo ">" . $results[$i]->Make_Name;
 			}
 			echo "</a></td></tr>";
 	        }
