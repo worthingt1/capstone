@@ -1,7 +1,7 @@
 <?php
+	ini_set("allow_url_fopen", 1); //needed for Marketcheck API
     $model = "";
     $make = "";
-    //echo($_SERVER["REQUEST_METHOD"]);
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $model = $_POST["model"];
         $make = $_POST["make"];
@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../styles.css"/>
   </head>
   <body>
+  <div id="content"></div>
   <div class=mainWithSidebar>
 <script>
 function hndlr(response) {
@@ -72,7 +73,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 				echo "<img class=carDisplay src='" . $imgUrl . "'/>";
 			}
 	} catch (Exception $ex) {
-
+		echo "Error loading image. Please contact our support team: 555-555-5555 with error code 3cars";
     }
     ///
     /// SIDE NAV
@@ -146,8 +147,105 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
         echo "Error loading navigation. Please contact our support team: 555-555-5555 with error code 52cars";
     }
 ?>
-        <div id="content"></div>
-        <p><?php echo $make . " " . $model; ?></p>
+		<?php
+			$year = date("Y");
+			$curl = curl_init();
+
+			curl_setopt_array($curl, array(
+				CURLOPT_URL => "http://api.marketcheck.com/v2/search/car/active?api_key=RKxVk0wx7MAmyMOao4WT2p74ajYVgIFg&year=$year&make=$makeClean&model=$modelClean",
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_ENCODING => "",
+				CURLOPT_MAXREDIRS => 1,
+				CURLOPT_TIMEOUT => 0,
+				CURLOPT_FOLLOWLOCATION => true,
+				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				CURLOPT_CUSTOMREQUEST => "GET",
+				CURLOPT_HTTPHEADER => array(
+					"Host: marketcheck-prod.apigee.net"
+				)
+			));
+
+			try {
+				try {
+					$useDb = true;
+					$results = null;
+					$conn = new mysqli($dbHost, $dbRead, $dbReadPw, $dbSchema);
+					$sql = "SELECT * FROM dylan_db WHERE query = ?";
+					$stmt = $conn->prepare($sql);
+					$query = "$year $make $model";
+					$stmt->bind_param("s", $query);
+					$stmt->execute();
+					$result = $stmt->get_result();
+					$results = $result->fetch_all(MYSQLI_ASSOC);
+					$stmt->close();
+					if (count($results) == 0) { // check if no results are found so we can fallback to api
+						$useDb = false;
+					} else {
+						foreach ($results as $row) {
+							$time = DateTime::createFromFormat ("Y-m-d H:i:s", $row["timestamp"]); // check to see if information in DB is current enough, otherwise use API
+							$now = new DateTime();
+							//echo $time->format("d-m-Y"); /*to be removed, debug
+							if (date_diff($now, $time)->format('d') > 2) {
+								$useDb = false;
+								echo "DB outdated, falling back to API and populating for next time";
+							}
+						}
+					}
+					$conn->close();
+				} catch (Exception $ex) {
+					$useDb = false;
+				}
+				if ($useDb == false) { // Fallback to API if the data is outdated or the db is unavailable
+					$raw = curl_exec($curl);
+					$json = json_decode($raw);
+					$results = $json->listings;
+					$conn = new mysqli($dbHost, $dbAdmin, $dbAdminPw, $dbSchema);
+					for ($i = 0; $i < count($results); $i++) {
+						$sql = "REPLACE INTO dylan_db (query, heading, vin, miles, msrp) VALUES(?, ?, ?, ?, ?)";
+						$stmt=$conn->prepare($sql) or die($conn->error); //*REMOVE ERROR OUTPUT FOR PRODUCTION
+						$heading = $results[$i]->heading;
+						$vin = $results[$i]->vin;
+						property_exists($results[$i], "miles") ? $miles = $results[$i]->miles : $miles = NULL;
+						property_exists($results[$i], "msrp") ? $msrp = $results[$i]->msrp : $msrp = NULL;
+						$query = "$year $make $model";
+						$stmt->bind_param("sssss", $query, $heading, $vin, $miles, $msrp);
+						$stmt->execute();
+						$stmt->close();
+					}
+					$conn->close();
+				}
+				//echo "Using API? ";
+				//echo $useDb ? "No. DB has current information." : "Yes. Updated DB for next use."; //*to be removed for production, showing if api is being used or not
+				echo "<p>Sales Listings for $query</p>";
+				echo "<table><tr><th>Heading</th><th>VIN</th><th>Miles</th><th>MSRP</th></tr>"; // echo results
+				for ($i = 0; $i < count($results); $i++) {
+					echo "<tr>";
+					if ($useDb) {
+						echo "<td>" . $results[$i]["heading"] . "</td>";
+						//echo " | ";
+						echo "<td>" . $results[$i]["vin"] . "</td>";
+						//echo " | ";
+						echo $results[$i]["miles"] != NULL ? "<td>" . $results[$i]["miles"] . "</td>" : "<td>N/A</td>";
+						//echo " | ";
+						echo $results[$i]["msrp"] != NULL ? "<td>" . $results[$i]["msrp"] . "</td>" : "<td>N/A</td>";
+						//echo " | ";
+					} else {
+						echo "<td>" . $results[$i]->heading . "</td>";
+						//echo " | ";
+						echo "<td>" . $results[$i]->vin . "</td>";
+						//echo " | ";
+						echo property_exists($results[$i], "miles") ? "<td>" . $results[$i]->miles . "</td>" : "<td>N/A</td>";
+						//echo " | ";
+						echo property_exists($results[$i], "msrp") ? "<td>\$" . $results[$i]->msrp . "</td>" : "<td>N/A</td>";
+						//echo " | ";
+					}
+					echo "</tr>";
+				}
+				echo "</table>";
+			} catch (Exception $ex) {
+				echo "Error loading sale listings. Please contact our support team: 555-555-5555 with error code 78cars";
+			}
+		?>
     </div>
   </body>
 </html>

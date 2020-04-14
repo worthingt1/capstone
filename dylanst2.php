@@ -27,9 +27,10 @@ try {
     $results = null;
     try { // Check if current data is available from the database before trying API
         $conn = new mysqli($dbHost, $dbRead, $dbReadPw, $dbSchema);
-        $sql = "SELECT * FROM dylan_db WHERE vin = ?";
+        $sql = "SELECT * FROM dylan_db WHERE query = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $make);
+        $query = "$year $make $model";
+        $stmt->bind_param("s", $query);
         $stmt->execute();
         $result = $stmt->get_result();
         $results = $result->fetch_all(MYSQLI_ASSOC);
@@ -59,13 +60,14 @@ try {
         //var_dump($results);
         $conn = new mysqli($dbHost, $dbAdmin, $dbAdminPw, $dbSchema);
         for ($i = 0; $i < count($results); $i++) {
-            $sql = "REPLACE INTO dylan_db (heading, vin, miles, msrp) VALUES(?, ?, ?, ?)";
+            $sql = "REPLACE INTO dylan_db (query, heading, vin, miles, msrp) VALUES(?, ?, ?, ?, ?)";
             $stmt=$conn->prepare($sql) or die($conn->error); //*REMOVE ERROR OUTPUT FOR PRODUCTION
             $heading = $results[$i]->heading;
             $vin = $results[$i]->vin;
             property_exists($results[$i], "miles") ? $miles = $results[$i]->miles : $miles = NULL;
             $msrp = $results[$i]->msrp;
-            $stmt->bind_param("ssss", $heading, $vin, $miles, $msrp);
+            $query = "$year $make $model";
+            $stmt->bind_param("sssss", $query, $heading, $vin, $miles, $msrp);
             $stmt->execute();
             $stmt->close();
         }
