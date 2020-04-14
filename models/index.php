@@ -72,7 +72,7 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
                 echo ">" . $results[$i]["Model_Name"];
 			} else {
 				echo str_replace(" ", "+", htmlentities($results[$i]->Model_Name));
-                echo "\">" . $results[$i]->Model_Name;
+                echo ">" . $results[$i]->Model_Name;
 			}
 			echo "</a>";
 	        }
