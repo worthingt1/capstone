@@ -8,7 +8,9 @@
     <div class="main">
         <h1>Cars for Sale in Your Local Area</h1>
         <marquee><h2 class="flash">Car Salesmen HATE this!!!</h2></marquee>
-		<h1 class=logo>CarHub</h1>
+		<div class=logoContainer>
+			<a class=logo href="/">CarHub</a>
+		</div>
 		<a href="./models/?make=Mazda"><img class=makeLogos src="img/mazda.png"></a>
 		<a href="./models/?make=BMW"><img class=makeLogos src="img/bmw.png"></a>
         <p><a href="makes" class="button">ALL MAKES</a></p>

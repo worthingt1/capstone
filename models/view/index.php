@@ -20,7 +20,9 @@
   <body>
   <div id="content"></div>
   <div class=mainWithSidebar>
-	<h1 class=logo>CarHub</h1>
+  	<div class=logoContainer>
+		<a class=logo href="/">CarHub</a>
+	</div>
 <script>
 function hndlr(response) {
 	for (var i = 0; i < 1; i++) {

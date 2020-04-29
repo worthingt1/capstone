@@ -5,15 +5,23 @@ body {
     width: 100%;
 }
 
-h1.logo {
+.logoContainer {
+    margin-bottom: 1%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+a.logo {
+    font-size: xx-large;
     border-radius: 100%;
     border: 1px solid black;
     color: #000000;
-    margin: auto auto 1% auto;
+    margin: 0px auto;
     padding: 2%;
     background-color: #ffa500;
     font-family: "Comic Sans MS", "Comic Sans", cursive;
     max-width: 10%;
+    text-decoration: none;
 }
 
 .makeLogos {
