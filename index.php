@@ -15,9 +15,6 @@
 		<a href="./models/?make=BMW"><img class=makeLogos src="img/bmw.png"></a>
         <p><a href="makes" class="button">ALL MAKES</a></p>
     </div>
-    <div class="listings">
-        <h1 class="listHeader">Listings Near Rowan</h2>
-    </div>
     <?php
 	require("config.php"); // DB connection credentials
     ini_set("allow_url_fopen", 1); //needed to load json API url
