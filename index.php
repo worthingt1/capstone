@@ -20,7 +20,6 @@
 	require("config.php"); // DB connection credentials
     ini_set("allow_url_fopen", 1); //needed to load json API url
 	$makes = [452, 444, 445, 440, 441, 442, 443, 448, 449, 456, 460, 464, 465, 466, 467, 468, 469, 472, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 485, 493, 498, 499, 502, 515, 523, 536];
-	//$makes = [452, 444, 445, 440];
     $cnt = count($makes);
     $qs = implode(',', array_fill(0, $cnt, '?'));
     $bind = str_repeat('i', $cnt);
@@ -62,7 +61,6 @@
 				if (in_array(intval($results[$i]->Make_ID), $makes)) {
 					$sql = "REPLACE INTO tom_makes (Make_ID, Make_Name) VALUES(?, ?)";
 					$stmt=$conn->prepare($sql) or die("Error loading info. Please contact our support team: 555-555-5555 with error code 420cars");
-					//$stmt=$conn->prepare($sql) or die($conn->error);
 					$makeId = $results[$i]->Make_ID;
 					$makeName = $results[$i]->Make_Name;
 					$stmt->bind_param("ss", $makeId, $makeName);
