@@ -8,7 +8,10 @@
     <div class="main">
         <h1>Cars for Sale in Your Local Area</h1>
         <marquee><h2 class="flash">Car Salesmen HATE this!!!</h2></marquee>
-        <p><a href="makes" class="button">MAKES</a></p>
+		<h1 class=logo>CarHub</h1>
+		<a href="./models/?make=Mazda"><img class=makeLogos src="img/mazda.png"></a>
+		<a href="./models/?make=BMW"><img class=makeLogos src="img/bmw.png"></a>
+        <p><a href="makes" class="button">ALL MAKES</a></p>
     </div>
     <div class="listings">
         <h1 class="listHeader">Listings Near Rowan</h2>
@@ -16,7 +19,8 @@
     <?php
 	require("config.php"); // DB connection credentials
     ini_set("allow_url_fopen", 1); //needed to load json API url
-    $makes = [444, 445, 440, 441, 442, 443, 448, 449, 456, 460, 464, 465, 466, 467, 468, 469, 472, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 485, 493, 498, 499, 502, 515, 523, 536];
+	$makes = [452, 444, 445, 440, 441, 442, 443, 448, 449, 456, 460, 464, 465, 466, 467, 468, 469, 472, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 485, 493, 498, 499, 502, 515, 523, 536];
+	//$makes = [452, 444, 445, 440];
     $cnt = count($makes);
     $qs = implode(',', array_fill(0, $cnt, '?'));
     $bind = str_repeat('i', $cnt);
@@ -26,7 +30,7 @@
 		$results = null;
 		try { // Check if current data is available from the database before trying API
 			$conn = new mysqli($dbHost, $dbRead, $dbReadPw, $dbSchema);
-			$sql = "SELECT * FROM tom_makes WHERE Make_ID IN ($qs)";
+			$sql = "SELECT * FROM tom_makes WHERE Make_ID IN ($qs) ORDER BY Make_Name";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param($bind, ...$makes);
 			$stmt->execute();
@@ -55,29 +59,45 @@
 			$results = $json->Results;
 			$conn = new mysqli($dbHost, $dbAdmin, $dbAdminPw, $dbSchema);
 			for ($i = 0; $i < count($results); $i++) {
-				$sql = "REPLACE INTO tom_makes (Make_ID, Make_Name) VALUES(?, ?) WHERE Make_ID IN ($qs)";
-				$stmt=$conn->prepare($sql) or die("Error loading info. Please contact our support team: 555-555-5555 with error code 420cars");
-				$makeId = $results[$i]->Make_ID;
-				$makeName = $results[$i]->Make_Name;
-				$stmt->bind_param("ss" . $bind, $makeId, $makeName, ...$makes);
-				$stmt->execute();
-				$stmt->close();
+				if (in_array(intval($results[$i]->Make_ID), $makes)) {
+					$sql = "REPLACE INTO tom_makes (Make_ID, Make_Name) VALUES(?, ?)";
+					$stmt=$conn->prepare($sql) or die("Error loading info. Please contact our support team: 555-555-5555 with error code 420cars");
+					//$stmt=$conn->prepare($sql) or die($conn->error);
+					$makeId = $results[$i]->Make_ID;
+					$makeName = $results[$i]->Make_Name;
+					$stmt->bind_param("ss", $makeId, $makeName);
+					$stmt->execute();
+					$stmt->close();
+				}
 			}
 			$conn->close();
 		}
-	        echo "<div class='sidenav'><div class='sideHeader'>Makes</div>";
-	        for ($i = 0; $i < count($results); $i++) {
-			echo "<a href=../models/?make=";
-			if ($useDb) {
-                echo str_replace(" ", "+", htmlentities($results[$i]["Make_Name"]));
-                echo ">" . $results[$i]["Make_Name"];
-			} else {
-                echo str_replace(" ", "+", htmlentities($results[$i]->Make_Name));
-                echo "\">" . $results[$i]->Make_Name;
+		///sorting alphabetically if using API
+		if (!$useDb) {
+			function compare($s1, $s2) {
+				return strcmp($s1->Make_Name, $s2->Make_Name);
 			}
-			echo "</a>";
-	        }
-	        echo "</div>";
+			usort($results, "compare");
+		}
+		///
+		echo "<div class='sidenav'><div class='sideHeader'>Makes</div>";
+		for ($i = 0; $i < count($results); $i++) {
+			//do not display if not on makes list
+			if (!$useDb && !in_array(intval($results[$i]->Make_ID), $makes)) {
+				continue;
+			} else {
+				echo "<a href=../models/?make=";
+				if ($useDb) {
+					echo str_replace(" ", "+", htmlentities($results[$i]["Make_Name"]));
+					echo ">" . $results[$i]["Make_Name"];
+				} else {
+						echo str_replace(" ", "+", htmlentities($results[$i]->Make_Name));
+						echo "\">" . $results[$i]->Make_Name;
+				}
+				echo "</a>";
+			}
+		}
+		echo "</div>";
     }
     catch (Exception $error) {
         echo "Error loading navigation. Please contact our support team: 555-555-5555 with error code 61cars";

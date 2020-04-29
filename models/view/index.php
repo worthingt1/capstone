@@ -20,6 +20,7 @@
   <body>
   <div id="content"></div>
   <div class=mainWithSidebar>
+	<h1 class=logo>CarHub</h1>
 <script>
 function hndlr(response) {
 	for (var i = 0; i < 1; i++) {
@@ -210,7 +211,7 @@ function hndlr(response) {
 					$conn->close();
 				}
 				echo "<p>Sales Listings for $query</p>";
-				echo "<table><tr><th>Heading</th><th>VIN</th><th>Miles</th><th>MSRP</th></tr>"; // echo results
+				echo "<table class=marketTable><tr><th>Heading</th><th>VIN</th><th>Miles</th><th>MSRP</th></tr>"; // echo results
 				for ($i = 0; $i < count($results); $i++) {
 					echo "<tr>";
 					if ($useDb) {

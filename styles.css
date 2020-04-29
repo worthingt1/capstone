@@ -5,6 +5,21 @@ body {
     width: 100%;
 }
 
+h1.logo {
+    border-radius: 100%;
+    border: 1px solid black;
+    margin: auto auto 1% auto;
+    padding: 2%;
+    background-color: #ffa500;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    max-width: 10%;
+}
+
+.makeLogos {
+    max-width: 5%;
+    vertical-align: middle;
+}
+
 .main {
     margin: 0px auto;
     text-align: center;
@@ -12,7 +27,9 @@ body {
 }
 
 .mainWithSidebar {
+    text-align: center;
     margin-left: 8%;
+    margin-right: 8%;
     padding: 2%;
 }
 
@@ -34,14 +51,14 @@ a.button {
     display: block;
     color: #ff0000;
     background-color: #00ff00;
-    width: 10%;
+    width: 8%;
     padding: 2%;
     margin: 0px auto;
     border-radius: 5px;
     border: 1px dotted black;
     text-decoration: none;
     font-weight: bold;
-    font-size: x-large;
+    font-size: large;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -115,4 +132,8 @@ a.button {
 .carDisplay {
     width: 32%;
     height: auto;
+}
+
+.marketTable {
+    margin: 0px auto;
 }
