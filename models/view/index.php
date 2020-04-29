@@ -58,6 +58,7 @@ function hndlr(response) {
 			$stmt->execute();
 			$stmt->close();
 			$conn->close();
+			echo "<img class=carDisplay src='" . $imgUrl . "'/>";
         }
     } else {
                 echo '<script src="https://www.googleapis.com/customsearch/v1?q=' . $makeClean . "+" . $modelClean . '&searchType=image&key=AIzaSyAFG_XFuzvrGSF_UML-V34t-UwNrYAngtI&cx=013204994027278291303:mhubrebrimn&callback=hndlr"></script>';
