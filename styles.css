@@ -8,6 +8,7 @@ body {
 h1.logo {
     border-radius: 100%;
     border: 1px solid black;
+    color: #000000;
     margin: auto auto 1% auto;
     padding: 2%;
     background-color: #ffa500;
