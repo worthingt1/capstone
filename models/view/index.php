@@ -22,22 +22,17 @@
   <div class=mainWithSidebar>
 <script>
 function hndlr(response) {
-	      //for (var i = 0; i < response.items.length; i++) {
-	      for (var i = 0; i < 1; i++) {
+	for (var i = 0; i < 1; i++) {
         var item = []
 		item[i] = response.items[i];
-	var model = <?php echo "\"$model\""; ?>;
-	document.getElementById("content").innerHTML += "<form action='index.php' method='post' id='imageSearch'><input type='text' hidden name='make' value='<?php echo $make; ?>'/><input type='text' hidden name='model' value='" + model + "'/><input type='text' hidden name='imgUrl' value='" + item[i].link + "' /><input type='text' hidden name='useApi' value='yes'/></form>";
-	//alert(JSON.stringify(item[i])); //VIEW RETURNED RESULT PARAMERTERS
-	document.getElementById("imageSearch").submit();
-      }
-      }
+		var model = <?php echo "\"$model\""; ?>;
+		document.getElementById("content").innerHTML += "<form action='index.php' method='post' id='imageSearch'><input type='text' hidden name='make' value='<?php echo $make; ?>'/><input type='text' hidden name='model' value='" + model + "'/><input type='text' hidden name='imgUrl' value='" + item[i].link + "' /><input type='text' hidden name='useApi' value='yes'/></form>";
+		document.getElementById("imageSearch").submit();
+    }
+}
 
     </script>
 <?php
-ini_set('display_errors', 1); //*REMOVE FOR PRODUCTION
-ini_set('display_startup_errors', 1); //*REMOVE FOR PRODUCTION
-error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 	require("../../config.php"); // DB connection credentials
     $results = null;
 	try {
@@ -184,7 +179,6 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 						foreach ($results as $row) {
 							$time = DateTime::createFromFormat ("Y-m-d H:i:s", $row["timestamp"]); // check to see if information in DB is current enough, otherwise use API
 							$now = new DateTime();
-							//echo $time->format("d-m-Y"); /*to be removed, debug
 							if (date_diff($now, $time)->format('d') > 2) {
 								$useDb = false;
 								echo "DB outdated, falling back to API and populating for next time";
@@ -214,30 +208,20 @@ error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 					}
 					$conn->close();
 				}
-				//echo "Using API? ";
-				//echo $useDb ? "No. DB has current information." : "Yes. Updated DB for next use."; //*to be removed for production, showing if api is being used or not
 				echo "<p>Sales Listings for $query</p>";
 				echo "<table><tr><th>Heading</th><th>VIN</th><th>Miles</th><th>MSRP</th></tr>"; // echo results
 				for ($i = 0; $i < count($results); $i++) {
 					echo "<tr>";
 					if ($useDb) {
 						echo "<td>" . $results[$i]["heading"] . "</td>";
-						//echo " | ";
 						echo "<td>" . $results[$i]["vin"] . "</td>";
-						//echo " | ";
 						echo $results[$i]["miles"] != NULL ? "<td>" . $results[$i]["miles"] . "</td>" : "<td>N/A</td>";
-						//echo " | ";
 						echo $results[$i]["msrp"] != NULL ? "<td>" . $results[$i]["msrp"] . "</td>" : "<td>N/A</td>";
-						//echo " | ";
 					} else {
 						echo "<td>" . $results[$i]->heading . "</td>";
-						//echo " | ";
 						echo "<td>" . $results[$i]->vin . "</td>";
-						//echo " | ";
 						echo property_exists($results[$i], "miles") ? "<td>" . $results[$i]->miles . "</td>" : "<td>N/A</td>";
-						//echo " | ";
 						echo property_exists($results[$i], "msrp") ? "<td>\$" . $results[$i]->msrp . "</td>" : "<td>N/A</td>";
-						//echo " | ";
 					}
 					echo "</tr>";
 				}

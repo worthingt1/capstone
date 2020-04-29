@@ -5,9 +5,6 @@
 </head>
 <body>
 <?php
-ini_set('display_errors', 1); //*REMOVE FOR PRODUCTION
-ini_set('display_startup_errors', 1); //*REMOVE FOR PRODUCTION
-error_reporting(E_ALL); //*REMOVE FOR PRODUCTION
 	require("../config.php"); // DB connection credentials
     ini_set("allow_url_fopen", 1); //needed to load json API url
     $makes = [444, 445, 440, 441, 442, 443, 448, 449, 456, 460, 464, 465, 466, 467, 468, 469, 472, 473, 474, 475, 476, 477, 478, 480, 481, 482, 483, 485, 493, 498, 499, 502, 515, 523, 536];
