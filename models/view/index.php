@@ -14,6 +14,33 @@
 ?>
 <html>
   <head>
+    
+  <script>
+  function showYears(str) {
+	  
+  	if (str == "") {
+  	  	document.getElementByID("txtHint").innerHTML = "";
+  	  	return;
+  	} else {
+  	  	if (window.XMLHttpRequest) {
+  	  	  	// code for IE7+, Firefox, Chrome, etc
+  	  	  	xmlhttp = new XMLHttpRequest();
+  	  	} else {
+  	  	  	// code for IE6, 5
+  	  	  	xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  	  	}
+  	  	xmlhttp.onreadystatechange = function() {
+  	  	  	if (this.readyState == 4 && this.status == 200) {
+  	  	  	  	document.getElementById("listings").innerHTML = this.responseText;
+  	  	  	}
+  	  	};
+  	  	xmlhttp.open("GET","newYear.php?year="+str+"&make=<?php echo $makeClean; ?>&model=<?php echo $modelClean; ?>",true);
+  	  	xmlhttp.send();
+  	}
+  }
+  </script>
+  
+  
     <title><?php echo $make . " " . $model; ?></title>
     <link rel="stylesheet" href="../../styles.css"/>
   </head>
@@ -146,6 +173,26 @@ function hndlr(response) {
         echo "Error loading navigation. Please contact our support team: 555-555-5555 with error code 52cars";
     }
 ?>
+
+<form>
+	<select name="years" onchange="showYears(this.value)">
+	<option value="1999">Select a model year:</option>
+	<option value="2020">2020</option>
+	<option value="2019">2019</option>
+	<option value="2018">2018</option>
+	<option value="2017">2017</option>
+	<option value="2016">2016</option>
+	<option value="2015">2015</option>
+	<option value="2014">2014</option>
+	<option value="2013">2013</option>
+	<option value="2012">2012</option>
+	</select>
+</form>
+<div id="txtHint"><b>Select a year to get listings...</b></div>
+
+
+
+
 		<?php
 			$year = date("Y");
 			$curl = curl_init();
@@ -196,40 +243,46 @@ function hndlr(response) {
 				if ($useDb == false) { // Fallback to API if the data is outdated or the db is unavailable
 					$raw = curl_exec($curl);
 					$json = json_decode($raw);
+					if (!property_exists($json, "listings")) { die("API quota reached. Check back tomorrow for listings."); } // check if API is reachable.
 					$results = $json->listings;
 					$conn = new mysqli($dbHost, $dbAdmin, $dbAdminPw, $dbSchema);
 					for ($i = 0; $i < count($results); $i++) {
-						$sql = "REPLACE INTO dylan_db (query, heading, vin, miles, msrp) VALUES(?, ?, ?, ?, ?)";
+						$sql = "REPLACE INTO dylan_db (query, heading, zip, vin, miles, msrp) VALUES(?, ?, ?, ?, ?, ?)";
 						$stmt=$conn->prepare($sql) or die($conn->error); //*REMOVE ERROR OUTPUT FOR PRODUCTION
 						$heading = $results[$i]->heading;
+						property_exists($results[$i], "zip") ? $zip = $results[$i]->zip : $zip = NULL;
 						$vin = $results[$i]->vin;
 						property_exists($results[$i], "miles") ? $miles = $results[$i]->miles : $miles = NULL;
 						property_exists($results[$i], "msrp") ? $msrp = $results[$i]->msrp : $msrp = NULL;
 						$query = "$year $make $model";
-						$stmt->bind_param("sssss", $query, $heading, $vin, $miles, $msrp);
+						$stmt->bind_param("ssssss", $query, $heading, $zip, $vin, $miles, $msrp);
 						$stmt->execute();
 						$stmt->close();
 					}
 					$conn->close();
 				}
-				echo "<p>Sales Listings for $query</p>";
-				echo "<table class=marketTable><tr><th>Heading</th><th>VIN</th><th>Miles</th><th>MSRP</th></tr>"; // echo results
-				for ($i = 0; $i < count($results); $i++) {
-					echo "<tr>";
-					if ($useDb) {
-						echo "<td>" . $results[$i]["heading"] . "</td>";
-						echo "<td>" . $results[$i]["vin"] . "</td>";
-						echo $results[$i]["miles"] != NULL ? "<td>" . $results[$i]["miles"] . "</td>" : "<td>N/A</td>";
-						echo $results[$i]["msrp"] != NULL ? "<td>" . $results[$i]["msrp"] . "</td>" : "<td>N/A</td>";
-					} else {
-						echo "<td>" . $results[$i]->heading . "</td>";
-						echo "<td>" . $results[$i]->vin . "</td>";
-						echo property_exists($results[$i], "miles") ? "<td>" . $results[$i]->miles . "</td>" : "<td>N/A</td>";
-						echo property_exists($results[$i], "msrp") ? "<td>\$" . $results[$i]->msrp . "</td>" : "<td>N/A</td>";
+				echo "<div id=listings>";
+					echo "<p>Sales Listings for $query</p>";
+					echo "<table class=marketTable><tr><th>Heading</th><th>Zip</th><th>VIN</th><th>Miles</th><th>MSRP</th></tr>"; // echo results
+					for ($i = 0; $i < count($results); $i++) {
+						echo "<tr>";
+						if ($useDb) {
+							echo "<td>" . $results[$i]["heading"] . "</td>";
+							echo $results[$i]["zip"] != NULL ? "<td>" . $results[$i]["zip"] . "</td>" : "<td>N/A</td>";
+							echo "<td>" . $results[$i]["vin"] . "</td>";
+							echo $results[$i]["miles"] != NULL ? "<td>" . $results[$i]["miles"] . "</td>" : "<td>N/A</td>";
+							echo $results[$i]["msrp"] != NULL ? "<td>" . $results[$i]["msrp"] . "</td>" : "<td>N/A</td>";
+						} else {
+							echo "<td>" . $results[$i]->heading . "</td>";
+							echo property_exists($results[$i], "zip") ? "<td>" . $results[$i]->zip . "</td>" : "<td>N/A</td>";
+							echo "<td>" . $results[$i]->vin . "</td>";
+							echo property_exists($results[$i], "miles") ? "<td>" . $results[$i]->miles . "</td>" : "<td>N/A</td>";
+							echo property_exists($results[$i], "msrp") ? "<td>\$" . $results[$i]->msrp . "</td>" : "<td>N/A</td>";
+						}
+						echo "</tr>";
 					}
-					echo "</tr>";
-				}
-				echo "</table>";
+					echo "</table>";
+				echo "</div>";
 			} catch (Exception $ex) {
 				echo "Error loading sale listings. Please contact our support team: 555-555-5555 with error code 78cars";
 			}
